@@ -1,8 +1,6 @@
 
 # AI Ticket Triage System (LangGraph)
 
-**Deployed on Streamlit:** [View Live App](https://generativeai-projects-qtxhjklkg8x3jikesckwz9.streamlit.app/)
-
 **AI Ticket Triage System** is an intelligent automation application built using **LangGraph**, **Groq**, and **Streamlit**.  
 It classifies healthcare support tickets, summarizes them, and automatically routes each ticket to the most relevant department.  
 
