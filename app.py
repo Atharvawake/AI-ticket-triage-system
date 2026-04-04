@@ -7,16 +7,36 @@ from langchain_groq import ChatGroq
 from langgraph.graph import StateGraph, START, END
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables from .env file (for local development)
 load_dotenv()
 
-# Initialize Groq LLM - Try .env file first
-groq_api_key = os.getenv("GROQ_API_KEY")
-
-if not groq_api_key:
-    st.error("GROQ_API_KEY not found in .env file. Please create a .env file with: GROQ_API_KEY=your_key_here")
+# Initialize Groq LLM
+# Priority: Streamlit Secrets (Cloud) > .env file (Local) > Error
+def get_groq_api_key():
+    # First, try Streamlit Secrets (Streamlit Cloud)
+    try:
+        return st.secrets["GROQ_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        pass
+    
+    # Second, try .env file (local development)
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    if groq_api_key:
+        return groq_api_key
+    
+    # If neither found, show error
+    st.error(
+        "⚠️ GROQ_API_KEY not found!\n\n"
+        "**For Streamlit Cloud:**\n"
+        "1. Go to your app settings → Secrets\n"
+        "2. Add: `GROQ_API_KEY = 'your_key_here'`\n\n"
+        "**For Local Development:**\n"
+        "1. Create a `.env` file in your project root\n"
+        "2. Add: `GROQ_API_KEY=your_key_here`"
+    )
     st.stop()
 
+groq_api_key = get_groq_api_key()
 llm = ChatGroq(model="llama-3.1-8b-instant", api_key=groq_api_key)
 
 # Defining Graph State 
